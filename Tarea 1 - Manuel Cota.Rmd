@@ -134,14 +134,12 @@ dots2 <- rbind(dots2, list(1000, 0))
 # Cremos la gráfica.
 plot(dots1,
      type = "l",
-     # xlim = c(0, 41), 
-     # ylim = c(0, 0.2),
      pch = 16,
      xlab = "x", 
      ylab = "P[x]",
      main = "Función de probabilidad normal (M = 1172 y DE = 153.6867)")
 
-# Agregamos los valores de la función con n = 40.
+# Agregamos los puntos y el poligono para delimitar el área.
 points(c(1000, 1200),
        c(dnorm(1000, m, de), dnorm(1200, m, de)),
        pch = 16,
@@ -155,6 +153,137 @@ lines(c(1200, 1200),
 polygon(dots2, col=rgb(0.51, 0.44, 1, alpha=0.6))
 
 # Agregamos la leyenda.
-legend(1500, 0.0025, legend="P[1000 < x < 1200] = 0.4347582", fill=rgb(0.51, 0.44, 1, alpha=0.6))
+legend(1400, 0.0025, legend="P[1000 < x < 1200] = 0.4347582", fill=rgb(0.51, 0.44, 1, alpha=0.6))
 ```
 
+# Ejercicio 3
+
+**Ante la demanda ocasionada por la pandemia de covid, se realizó una investigación de los precios por recargas de oxígeno medicinal en cilindros con capacidad para 10,000 litros de oxígeno. Si el precio ofrecido por los proveedores nacionales sigue una distribución normal con media de MX$731 y desviación estándar de MX$175:**
+
+**1. Calcule el porcentaje de tanques cuyo precio oscila entre MX$600 y MX$700.**
+
+Ya que se trata de una distribución normal ($m = 731$, $\sigma = 175$), podemos usar la probabilidad de obtener un precio entre 600 y 700, con la cual obtenemos el porcentaje.
+
+```{r}
+m <- 731
+de <- 175
+```
+
+
+Calculamos entonces el área bajo la curva de la distribución entre los valores de 600 y 700:
+
+$P[600 < x < 700] = F(700) - F(600)$.
+
+```{r}
+p <- pnorm(700, m, de) - pnorm(600, m, de)
+p
+```
+Para obtener el porcentaje, solo multiplicamos por 100.
+
+```{r}
+p * 100
+```
+
+**2. Calcule el porcentaje de tanques cuyo precio es de al menos MX$800.**
+
+De la misma manera, buscamos la probabilidad (convertida a porcentaje) de que el precio sea 800 o mas.
+
+Calculamos entonces el area bajo la curva de la distribución:
+
+$P[x > 800] = 1 - F(800)$
+
+```{r}
+p <- 1 - pnorm(800, m, de)
+p
+```
+Lo cual nos da el porcentaje:
+
+```{r}
+p * 100
+```
+
+**3. Grafique la función de probabilidad (o densidad) utilizada.**
+
+```{r}
+# Generamos los valores para la distribución.
+x1 <- seq(500, 1500, 10)
+dots1 <- data.frame( x1, Probabilidad = dnorm(x1, m, de) )
+
+# Generamos los valores para el area del inciso 3.1
+x2 <- seq(600, 700, 10)
+dots2 <- data.frame( x2, dnorm(x2, m, de))
+dots2 <- rbind(dots2, list(700, 0))
+dots2 <- rbind(dots2, list(600, 0))
+
+# Generamos los valores para el area del inciso 3.2
+x3 <- seq(800, 1500, 10)
+dots3 <- data.frame( x3, dnorm(x3, m, de))
+dots3 <- rbind(dots3, list(1500, 0))
+dots3 <- rbind(dots3, list(800, 0))
+
+# Cremos la gráfica.
+plot(dots1,
+     type = "l",
+     pch = 16,
+     xlab = "x", 
+     ylab = "P[x]",
+     main = "Función de probabilidad normal (M = 731 y DE = 175)")
+
+# Agregamos el area del inciso 3.1
+points(c(600, 700),
+       c(dnorm(600, m, de), dnorm(700, m, de)),
+       pch = 16,
+       col = "blue")
+lines(c(600, 600),
+      c(0, dnorm(600, m, de)),
+      col="blue")
+lines(c(700, 700),
+      c(0, dnorm(700, m, de)),
+      col="blue")
+polygon(dots2, col=rgb(0.51, 0.44, 1, alpha=0.6))
+
+# Agregamos el area del inciso 3.2
+points(c(800),
+       c(dnorm(800, m, de)),
+       pch = 16,
+       col = "red")
+lines(c(800, 800),
+      c(0, dnorm(800, m, de)),
+      col="red")
+lines(c(1500, 1500),
+      c(0, dnorm(1500, m, de)),
+      col="red")
+polygon(dots3, col= rgb(239/255, 35/255, 60/255, alpha=0.6))
+
+# Agregamos la leyenda.
+legend(900, 0.0022, legend=c("P[600 < x < 700] = 0.2026 -> 20.26%", "P[600 < x < 700] = 0.3466 -> 34.66%"), fill=c("blue", "red"))
+
+```
+
+# Ejercicio 4
+
+**El primer filtro en un puesto de vacunación contra covid, consiste en preguntar a las personas si han presentado en la última semana alguno de los síntomas asociados a la enfermedad como tos y fiebre. Si alguna persona ha presentado al menos uno de estos síntomas, se le invita a pasar a responder un cuestionario más detallado con profesionales de la salud para decidir si es conveniente vacunarlo o no. Si de registros previos se sabe que el 97% de las personas que acuden a vacunarse no han presentado síntomas en la última semana:**
+
+**1. Calcule la probabilidad de que se necesiten encuestar a 100 personas para encontrar a la primera que pasará a responder el cuestionario detallado.**
+
+
+
+**2. Calcule la probabilidad de que la 50° persona sea la primera que pasará a responder el cuestionario detallado.**
+
+**3. Calcule la probabilidad de que la primera persona encuestada sea la primera que pasará a responder el cuestionario detallado.**
+
+**4. Grafique la función de probabilidad (o densidad) utilizada.**
+
+
+
+# Ejercicio 5
+
+**Durante el proceso de vacunación contra covid, se aplicaron en cierto centro de salud 100 vacunas de la marca Moderna, y 200 de la marca Pfizer. Si de las 300 personas vacunadas se selecciona una muestra de 15, y se les contacta por teléfono para dar seguimiento e investigar las posibles reacciones provocadas por la vacuna:**
+
+**1. Calcule la probabilidad de que todas personas seleccionadas en la muestra hayan sido vacunadas con la vacuna Moderna.**
+
+**2. Calcule la probabilidad de que dos o más de las personas de la muestra hayan sido vacunadas con Moderna**
+
+**3. Calcule la probabilidad de que entre 7 y 10 personas hayan sido vacunadas con Pfizer**
+
+**4. Grafique la función de probabilidad (o densidad) utilizada.**
