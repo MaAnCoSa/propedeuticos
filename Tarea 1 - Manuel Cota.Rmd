@@ -1,0 +1,160 @@
+---
+title: "Tarea 1- Probabilidad y Estadística"
+author: "Manuel Cota"
+date: "2024-06-05"
+output: html_document
+---
+
+
+## OBJETIVO
+
+**1. Identificar variables aleatorias comunes y sus distribuciones en contextos dados**
+**2. Aplicar propiedades de la probabilidad para resolver problemas**
+**3. Identificar comandos de R para el cálculo de probabilidades**
+**4. Analizar la forma de las funciones de probabilidad (o densidad) de variables aleatorias comunes**
+**5. Crear archivos RMarkdown**
+
+## INSTRUCCIONES
+
+**1. Identifique la variable aleatoria y distribución que resuelve cada uno de los problemas planteados**
+**2. Resuelva los ejercicios utilizando R**
+**3. Escriba sus respuestas en un archivo R Markdown**
+**4. Envíe en html sus respuestas al apartado correspondiente en el grupo de Teams**
+
+## Ejercicio 1
+
+**Se convocaron a estudiantes de enfermería y al público en general para registrarse y apoyar como voluntario en los puestos de vacunación contra covid. Si 7 de cada 10 voluntarios son estudiantes de enfermería:**
+
+**1. Calcule la probabilidad de que se necesiten 40 voluntarios registrados para completar 20 estudiantes de enfermería.**
+
+La probabilidad de que una persona sea estudiante de enfermería es de $p = 0.7$. Para este caso en particular, el tamaño de la muestra es $n = 40$ y queremos saber la probabilidad de que tengamos $20$ éxitos.
+
+Por lo tanto, queremos calcular $P[x = 20] = Binom(20, n = 40, p = 0.7)$.
+
+```{r}
+dbinom(20, 40, 0.7)
+```
+En porcentaje, tenemos:
+
+```{r}
+dbinom(20, 40, 0.7) * 100
+```
+
+**2. Calcule la probabilidad de que se necesiten 30 voluntarios registrados para completar 20 estudiantes de enfermería.**
+
+La probabilidad de éxito es $0.7$ y el tamaño de la muestra sería $n = 30$. Queremos saber la probabilidad de que tengamos $20$ éxitos.
+
+Por lo tanto, queremos calcular $P[x = 20] = Binom(20, n = 30, p = 0.7)$.
+
+```{r}
+dbinom(20, 30, 0.7)
+```
+En porcentaje, tenemos:
+
+```{r}
+dbinom(20, 30, 0.7) * 100
+```
+
+**3. Grafique la función de probabilidad (o densidad) utilizada**
+
+```{r}
+# Generamos los valores para la distribución del primer inciso (n = 40).
+x1 <- seq(0, 40, 1)
+dots1 <- data.frame( x1, Probabilidad = dbinom(x1, 40, 0.7) )
+
+# Generamos los valores para la distribución del segundo inciso (n = 30).
+x2 <- seq(0, 30, 1)
+dots2 <- data.frame( x2, Probabilidad = dbinom(x2, 30, 0.7) )
+
+# Cremos la gráfica.
+plot(x = 1,
+     type = "n",
+     xlim = c(0, 41), 
+     ylim = c(0, 0.2),
+     pch = 16,
+     xlab = "x", 
+     ylab = "P[x]",
+     main = "Función de probabilidad utilizada (n = 40 y n = 30)")
+
+# Agregamos los valores de la función con n = 40.
+points(dots1,
+       pch = 16,
+       col = "blue")
+# Agregamos los valores de la función con n = 30.
+points(dots2,
+       pch = 16,
+       col = "red")
+# Agregamos la leyenda para diferenciar ambas funciones en la gráfica.
+legend(0, 0.2, legend=c("n = 40", "n = 30"), fill=c("blue", "red"))
+```
+
+
+
+# Ejercicio 2
+
+**Los precios nacionales por arrendamiento de tanques con oxígeno medicinal con capacidad para 10,000 litros de oxígeno, tan demandados durante la contingencia sanitaria por covid, tienen una media de MX$1177 y una desviación estándar de MX$972. Si se elige una muestra de 40 tanques:**
+
+**1. Aproxime la probabilidad de que la media muestral de sus precios se encuentre entre MX$1000 y MX$1200 pesos.**
+
+Por el Teorema del Limite Central, sabemos que la distribución de las medias se va a comportar también como una normal con $\bar{\mu}_{\bar{X}} = \mu$ y $\bar{\sigma}_{\bar{X}} = \frac{\sigma}{\sqrt{n}}$, siendo $n$ el tamaño de la muestra (en nuestro caso, $n = 40$).
+
+Entonces, modelamos mediante una distribución normal con media de $\mu = 1177$ y $\sigma = \frac{972}{\sqrt{40}}$.
+
+```{r}
+m <- 1177
+de <- 972 / (sqrt(40))
+m
+de
+```
+
+Queremos entonces calcular $P[1000 < x < 1200] = F(1200) - F(1000)$.
+
+```{r}
+pnorm(1200, m, de) - pnorm(1000, m, de)
+```
+En porcentaje, tenemos:
+
+```{r}
+(pnorm(1200, m, de) - pnorm(1000, m, de)) * 100
+```
+
+**2. Grafique la función de probabilidad (o densidad) utilizada.**
+
+```{r}
+# Generamos los valores para la distribución.
+x1 <- seq(500, 2500, 10)
+dots1 <- data.frame( x1, Probabilidad = dnorm(x1, m, de) )
+
+# Generamos los valores para la pequeña porción bajo la curva que nos interesaba.
+x2 <- seq(1000, 1200, 10)
+dots2 <- data.frame( x2, dnorm(x2, m, de))
+dots2 <- rbind(dots2, list(1200, 0))
+dots2 <- rbind(dots2, list(1000, 0))
+
+# Cremos la gráfica.
+plot(dots1,
+     type = "l",
+     # xlim = c(0, 41), 
+     # ylim = c(0, 0.2),
+     pch = 16,
+     xlab = "x", 
+     ylab = "P[x]",
+     main = "Función de probabilidad normal (M = 1172 y DE = 153.6867)")
+
+# Agregamos los valores de la función con n = 40.
+points(c(1000, 1200),
+       c(dnorm(1000, m, de), dnorm(1200, m, de)),
+       pch = 16,
+       col = "blue")
+lines(c(1000, 1000),
+      c(0, dnorm(1000, m, de)),
+      col="blue")
+lines(c(1200, 1200),
+      c(0, dnorm(1200, m, de)),
+      col="blue")
+polygon(dots2, col=rgb(0.51, 0.44, 1, alpha=0.6))
+
+# Agregamos la leyenda.
+legend(1500, 0.0025, legend="P[1000 < x < 1200] = 0.4347582", fill=rgb(0.51, 0.44, 1, alpha=0.6))
+```
+
