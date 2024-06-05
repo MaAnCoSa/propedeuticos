@@ -1,0 +1,121 @@
+---
+title: "Práctica 1- Manuel Cota"
+author: "Manuel Cota"
+date: "2024-05-29"
+output: html_document
+---
+
+## Ejercicio 1
+
+#### En una empresa se realizan frecuentemente pruebas para detectar COVID entre los trabajadores, como ejercicio de prevención. De registros previos, se sabe que 1 de cada 10 resultan positivos a la prueba. Si en cada ejercicio se aplican pruebas a 20 trabajadores y debido a las medidas de seguridad, se puede suponer que el estado de salud de un trabajador es independiente del estado de salud de los demás.
+
+#### 1: ¿Cuál esla probabilidad de que en esos 20 sujetos elegidos resulten positivos exactamente 2 de ellos?
+
+$X =$ cantidad de casospositivos en la muestra de $20$ trabajadores, entonces $X \sim Binomial(n=20, p=1/10)$.
+
+Queremos calcular $P[X = 2] = f(2)$.
+
+```{r}
+dbinom(2, 20, 0.1)
+```
+
+#### 2: Calcular la probabilidad de que resulten a lo más 5 trabajadores positivos a COVID.
+
+Queremos calcular $P[X \leq 5] = F(5) = f(0) + f(1) + f(2) + f(3) + f(4) + f(5)$
+
+```{r}
+sum(dbinom(0:5, 20, 0.1))
+```
+
+
+```{r}
+pbinom(5, 20, 0.1)
+```
+
+#### 3: ¿Cual es la probabilidad de que resulten por lo menos 3 positivos a COIVD?
+
+Queremos caluclar $P[X \geq 3] = f(3) + f(4) + ... + f(19) + f(20)$
+
+O, dicho de otro modo, $P[X \geq] = 1 - F(2)$
+
+```{r}
+1 - pbinom(2, 20, 0.1)
+```
+
+# ----------------------------------------------------------
+# Dia 2
+# ----------------------------------------------------------
+
+
+#### 4: Grafique la función de probabilidad.
+
+```{r}
+x <- seq(0, 20, 1)
+tabla.prob <- data.frame( x = x, Probabilidad = dbinom(x, 20, 0.1) )
+
+plot(tabla.prob, main="Binomial(n=20, p=0.1)", pch = 19, ylab = "f(x)", col = "blue")
+```
+
+
+#### 6: Genere 1000 muestras aleatorias con esta distribución (simulando que se ha repetido el ejercicio de prevención contra COVID 1000 veces). Calcule las frecuencias relativas y compare con las probabilidades teóricas de la gráfica en el inciso anterior.
+
+```{r}
+muestras <- rbinom(n=1000, size=20, prob=0.1)
+muestras
+```
+Elaboremos una tabla de frecuencias de las muestras obtenidas.
+
+```{r}
+table(muestras)
+```
+```{r}
+prop.table( table(muestras) )
+```
+
+
+```{r}
+norm_datos <- rnorm(50)
+boxplot(norm_datos)
+```
+```{r}
+boxplot(runif(100))
+```
+
+
+
+```{r}
+x <- c(3, 1, 2, 4, 2, 3, 2, 5, 1, 3)
+y <- c(8, 7, 6, 8, 5, 9, 10, 9, 8, 10)
+
+lm(y~x)
+c <- cor(x, y)
+
+c^2
+```
+
+```{r}
+x1 <- data(anscombe)
+x1
+```
+
+```{r}
+lm(formula=y1~x1, anscombe)
+cor(x1, y1)
+```
+```{r}
+lm(formula=y2~x2, anscombe)
+cor(y1)
+```
+```{r}
+lm(formula=y3~x3, anscombe)
+
+```
+```{r}
+lm(formula=y4~x4, anscombe)
+
+```
+
+```{r}
+summary(anscombe)
+```
+
